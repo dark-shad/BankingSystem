@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const User = require('./models/user');
+const Transaction = require('./models/transaction');
 var path = require("path");
 const connectDB = require("./DB/connection");
 const app = express();
@@ -30,7 +31,16 @@ app.get('/transaction', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', '/pages/transaction.html'));
   });
 
-app.get('/users', (req, res) => {
+
+// Set up the 'views' directory and the view engine
+app.set('views', path.join(__dirname, 'public', 'views'));
+app.set('view engine', 'ejs');
+// Set up a route for the transfer form
+app.get('/transferForm', (req, res) => {
+  res.render('transferForm');
+});
+
+app.get('/userAdd', (req, res) => {
     User.find()
       .then(users => {
         res.json(users);
@@ -43,10 +53,11 @@ app.get('/users', (req, res) => {
 
 // Route to handle user creation
 app.post('/users', (req, res) => {
-  const { firstName, lastName, email, amount } = req.body;
+  const { accNumber, firstName, lastName, email, amount } = req.body;
 
   // Create a new user object
   const newUser = new User({
+    accNumber,
     firstName,
     lastName,
     email,
@@ -65,7 +76,9 @@ app.post('/users', (req, res) => {
 });
 
 
-
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
+
+
+

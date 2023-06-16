@@ -2,7 +2,6 @@
 <html>
 <head>
   <title>User List</title>
-  <!-- Include Bootstrap CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
 </head>
 <body>
@@ -12,6 +11,7 @@
     <table class="table mt-4">
       <thead>
         <tr>
+          <th>Account Number</th>
           <th>First Name</th>
           <th>Last Name</th>
           <th>Email</th>
@@ -23,29 +23,27 @@
       </tbody>
     </table>
   </div>
-
-  <!-- Include Bootstrap JS (optional) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-
+ 
   <script>
     // Fetch user data and populate the table dynamically
-    fetch('/users')
-      .then(response => response.json())
-      .then(data => {
-        const tbody = document.querySelector('tbody');
-        data.forEach(user => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${user.firstName}</td>
-            <td>${user.lastName}</td>
-            <td>${user.email}</td>
-            <td>${user.amount}</td>
-            <td><button class="btn btn-primary">Transfer</button></td>
-          `;
-          tbody.appendChild(row);
-        });
-      })
-      .catch(error => console.error('Error fetching users:', error));
+fetch('/userAdd')
+.then(response => response.json())
+.then(data => {
+  const tbody = document.querySelector('tbody');
+  data.forEach(user => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${user.accNumber}</td>
+      <td>${user.firstName}</td>
+      <td>${user.lastName}</td>
+      <td>${user.email}</td>
+      <td>${user.amount}</td>
+      <td><a href="/transferForm"><button class="btn btn-primary transfer-button"  data-sender-id="${user.accNumber}">Transfer</button></a></td>
+    `;
+    tbody.appendChild(row);
+  });
+})
+.catch(error => console.error('Error fetching users:', error));
   </script>
 </body>
-</html>
+</html>  
