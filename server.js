@@ -31,25 +31,35 @@ app.get('/transaction', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', '/pages/transaction.html'));
   });
 
+app.get('/userList', (req, res) => {
+    User.find()
+      .then(users => {
+        res.json(users);
+      })
+      .catch(error => {
+        console.error('Error fetching users:', error);
+        res.status(500).send('Error fetching users');
+      });
+  });
 
+app.get('/transfer/:accNumber', async (req, res) => {
+    const accNumber = req.params.accNumber;
+    const user = await User.findOne({ accNumber });
+    if (!user) {
+      // Handle the case where the user is not found
+      res.render('transferForm', { error: 'User not found' });
+      return;
+    }
+  
+    res.render('transferForm', { user });
+  });
+  
 // Set up the 'views' directory and the view engine
 app.set('views', path.join(__dirname, 'public', 'views'));
 app.set('view engine', 'ejs');
 // Set up a route for the transfer form
 app.get('/transferForm/:accNumber', async (req, res) => {
   const users = await User.find();
-  res.render('transferForm', { user });
-});
-
-app.get('/transfer/:accNumber', async (req, res) => {
-  const accNumber = req.params.accNumber;
-  const user = await User.findOne({ accNumber });
-  if (!user) {
-    // Handle the case where the user is not found
-    res.render('transferForm', { error: 'User not found' });
-    return;
-  }
-
   res.render('transferForm', { user });
 });
 
@@ -63,43 +73,6 @@ app.get('/remainingUsers/:accNumber', async (req, res) => {
   }
 });
 
-
-
-
-app.get('/userAdd', (req, res) => {
-    User.find()
-      .then(users => {
-        res.json(users);
-      })
-      .catch(error => {
-        console.error('Error fetching users:', error);
-        res.status(500).send('Error fetching users');
-      });
-  });
-
-// Route to handle user creation
-app.post('/users', (req, res) => {
-  const { accNumber, firstName, lastName, email, amount } = req.body;
-
-  // Create a new user object
-  const newUser = new User({
-    accNumber,
-    firstName,
-    lastName,
-    email,
-    amount
-  });
-
-  // Save the user to the database
-  newUser.save()
-    .then(() => {
-      res.status(201).send('User created successfully');
-    })
-    .catch((err) => {
-      console.error('Error creating user:', err);
-      res.status(500).send('Error creating user');
-    });
-});
 
 
 app.listen(port, () => {
