@@ -4,7 +4,16 @@
   <title>Transfer Details</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
 </head>
+<script>
+  fetch('header')
+      .then(response => response.text())
+      .then(html => {
+        const headerPlaceholder = document.querySelector('#header-placeholder');
+        headerPlaceholder.innerHTML = html;
+      });
+</script>
 <body>
+  <div id="header-placeholder"></div>
   <div class="container">
     <h1 class="mt-5">Transfer Details</h1>
 
@@ -30,11 +39,16 @@
     </div>
 
     <h2 class="mt-4">Transfer Funds</h2>
-    <form action="/transfer" method="POST">
+    <form method="POST" action="/amtTransfer">
       <div class="mb-3">
+        <input type="hidden" id="senderId" name="senderId" value="<%= user.accNumber %>">
+        <div class="mb-3">
+            <label for="sender" id="sender"class="form-label">Sender:</label>
+            <span><%= user.accNumber %></span>&nbsp;<span><%= user.firstName %></span>&nbsp;<span><%= user.lastName %></span>
+          </div>
         <label for="recipient" class="form-label">Recipient:</label>
         <select class="form-select" id="recipient" name="recipient" required>
-          <option value="" selected disabled>Select a recipient</option>
+          <option value="zyx" selected disabled>Select a recipient</option>
         </select>
       </div>
       <div class="mb-3">
@@ -44,6 +58,12 @@
       <button type="submit" class="btn btn-primary">Transfer</button>
     </form>
   </div>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-white text-center py-3" style="position: fixed; bottom: 0; left: 0; width: 100%;">
+    <p>&copy; 2023 Your Company. All rights reserved.</p>
+  </footer>
+  
 
   <script>
     fetch('/remainingUsers/<%= user.accNumber %>')
