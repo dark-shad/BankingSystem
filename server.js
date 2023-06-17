@@ -36,9 +36,35 @@ app.get('/transaction', (req, res) => {
 app.set('views', path.join(__dirname, 'public', 'views'));
 app.set('view engine', 'ejs');
 // Set up a route for the transfer form
-app.get('/transferForm', (req, res) => {
-  res.render('transferForm');
+app.get('/transferForm/:accNumber', async (req, res) => {
+  const users = await User.find();
+  res.render('transferForm', { user });
 });
+
+app.get('/transfer/:accNumber', async (req, res) => {
+  const accNumber = req.params.accNumber;
+  const user = await User.findOne({ accNumber });
+  if (!user) {
+    // Handle the case where the user is not found
+    res.render('transferForm', { error: 'User not found' });
+    return;
+  }
+
+  res.render('transferForm', { user });
+});
+
+app.get('/remainingUsers/:accNumber', async (req, res) => {
+  try {
+    const currentAccNumber = req.params.accNumber;
+    const remainingUsers = await User.find({ accNumber: { $ne: currentAccNumber } }).lean();
+    res.json(remainingUsers);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch remaining users' });
+  }
+});
+
+
+
 
 app.get('/userAdd', (req, res) => {
     User.find()

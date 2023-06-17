@@ -1,1 +1,64 @@
-yoyo
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Transfer Details</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container">
+    <h1 class="mt-5">Transfer Details</h1>
+
+    <div class="mt-4">
+      <label class="fw-bold">Account Number:</label>
+      <span><%= user.accNumber %></span>
+    </div>
+    <div class="mt-2">
+      <label class="fw-bold">First Name:</label>
+      <span><%= user.firstName %></span>
+    </div>
+    <div class="mt-2">
+      <label class="fw-bold">Last Name:</label>
+      <span><%= user.lastName %></span>
+    </div>
+    <div class="mt-2">
+      <label class="fw-bold">Email:</label>
+      <span><%= user.email %></span>
+    </div>
+    <div class="mt-2">
+      <label class="fw-bold">Amount:</label>
+      <span><%= user.amount %></span>
+    </div>
+
+    <h2 class="mt-4">Transfer Funds</h2>
+    <form action="/transfer" method="POST">
+      <div class="mb-3">
+        <label for="recipient" class="form-label">Recipient:</label>
+        <select class="form-select" id="recipient" name="recipient" required>
+          <option value="" selected disabled>Select a recipient</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="amount" class="form-label">Transfer Amount:</label>
+        <input type="number" class="form-control" id="amount" name="amount" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Transfer</button>
+    </form>
+  </div>
+
+  <script>
+    fetch('/remainingUsers/<%= user.accNumber %>')
+  .then(response => response.json())
+  .then(data => {
+    const recipientSelect = document.getElementById('recipient');
+    data.forEach(user => {
+      const option = document.createElement('option');
+      option.value = user.accNumber;
+      option.textContent = `${user.firstName} ${user.lastName} (Account Number: ${user.accNumber})`;
+      recipientSelect.appendChild(option);
+    });
+  })
+  .catch(error => console.error('Error fetching remaining users:', error));
+
+  </script>
+</body>
+</html>

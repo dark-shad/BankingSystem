@@ -33,17 +33,21 @@ fetch('/userAdd')
   data.forEach(user => {
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td>${user.accNumber}</td>
-      <td>${user.firstName}</td>
-      <td>${user.lastName}</td>
-      <td>${user.email}</td>
-      <td>${user.amount}</td>
-      <td><a href="/transferForm"><button class="btn btn-primary transfer-button"  data-sender-id="${user.accNumber}">Transfer</button></a></td>
-    `;
-    tbody.appendChild(row);
+  <td>${user.accNumber}</td>
+  <td>${user.firstName}</td>
+  <td>${user.lastName}</td>
+  <td>${user.email}</td>
+  <td>${user.amount}</td>
+  <td><button class="btn btn-primary transfer-button" onclick="transfer('${user.accNumber}')">Transfer</button></td>
+`;
+    tbody.appendChild(row); 
   });
 })
 .catch(error => console.error('Error fetching users:', error));
+
+function transfer(accountNumber) {
+  window.location.href = "/transfer/" + accountNumber;
+}
   </script>
 </body>
 </html>  
